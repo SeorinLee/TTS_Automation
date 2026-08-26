@@ -82,14 +82,14 @@ export async function workerFetch(path: string, init?: RequestInit): Promise<Res
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), WORKER_TIMEOUT_MS);
   try {
+    const headers = new Headers(init?.headers);
+    headers.set("ngrok-skip-browser-warning", "true");
+
     return await fetch(`${WORKER_BASE_URL}${path}`, {
       cache: "no-store",
       signal: controller.signal,
       ...init,
-      headers: {
-        "ngrok-skip-browser-warning": "true",
-        ...(init?.headers ?? {}),
-      },
+      headers,
     });
   } catch {
     return new Response(
