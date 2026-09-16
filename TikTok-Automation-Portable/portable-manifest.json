@@ -1,0 +1,19 @@
+﻿{
+    "name":  "TikTok-Automation-Portable",
+    "format":  "windows-x64-portable",
+    "created_at":  "2026-09-16T07:34:03.9956483Z",
+    "start":  "START_TIKTOK_AUTOMATION.bat",
+    "features":  [
+                     "gmv_lookup",
+                     "invitation_lookup",
+                     "invitation_name_edit"
+                 ],
+    "unified_worker":  "worker/gmv-worker.exe",
+    "worker_port":  8000,
+    "separate_invitation_worker":  false,
+    "bundled_python_worker":  "worker/gmv-worker.exe",
+    "bundled_node_runtime":  "runtime/node.exe",
+    "python_install_required":  false,
+    "node_or_npm_install_required":  false,
+    "system_requirement":  "Windows 10/11 x64 and Chrome or Microsoft Edge"
+}

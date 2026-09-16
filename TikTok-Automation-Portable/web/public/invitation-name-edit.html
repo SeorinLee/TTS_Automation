@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>초대장 이름수정 | TikTok Automation</title>
+    <link rel="stylesheet" href="/_next/static/css/e161830ae003b404.css" />
+    <link rel="stylesheet" href="/app-shell.css?v=34" data-app-shell-style="true" />
+    <script src="/app-shell.js?v=23" defer></script>
+    <script src="/browser-market-selector.js?v=11" data-browser-market-selector="true" defer></script>
+    <script src="/invitation-name-editor.js?v=42" defer></script>
+  </head>
+  <body>
+    <header class="automation-shell">
+      <div class="automation-shell-inner">
+        <a class="automation-brand" href="/?ui=browser-market-v7"><span class="automation-brand-mark">TA</span><span>TikTok Automation</span></a>
+        <nav class="automation-nav" aria-label="자동화 메뉴">
+          <a href="/?ui=browser-market-v7" data-automation-section="gmv">GMV 자동화</a>
+          <a href="/invitations" data-automation-section="invitations">초대장 조회</a>
+          <a href="/invitation-name-edit.html" data-automation-section="invitation-name-edit" class="active" aria-current="page">초대장 이름수정</a>
+        </nav>
+      </div>
+    </header>
+    <header class="topbar"><nav aria-label="초대장 이름수정 도구 메뉴"><a href="/invitation-name-edit.html">새 작업</a><a href="#rename-progress">작업 결과</a><a href="/settings?ui=profile-matrix-v7">TikTok 로그인</a></nav></header>
+
+    <main class="container">
+      <section class="page-intro invitation-intro">
+        <div class="invitation-intro-copy">
+          <span class="eyebrow">INVITATION NAME EDITOR</span>
+          <h1>초대장 이름수정</h1>
+          <p class="sub">번호가 없는 동일 초대장을 찾아 비어 있는 번호를 순서대로 붙이고, 저장 결과까지 다시 확인합니다.</p>
+        </div>
+        <span class="coming-soon-badge invitation-live-badge">VERIFIED EDIT</span>
+      </section>
+
+      <div class="status-strip accept-status-strip">
+        <div><span id="rename-worker-dot" class="status-dot checking"></span><span id="rename-worker-status">Worker 확인 중</span></div>
+        <div><span id="rename-login-dot" class="status-dot checking"></span><span id="rename-login-status">로그인 확인 중</span></div>
+      </div>
+
+      <section class="step-card">
+        <div class="step-heading"><span class="step-number">01</span><div><h2>브라우저와 마켓 선택</h2><p>Chrome 또는 Edge를 고른 뒤 US/UK 국가를 선택하세요.</p></div></div>
+        <div class="profile-grid">
+          <button type="button" class="profile-option selected" data-profile-code="US_CHROME"><span class="profile-copy"><strong>Chrome</strong></span></button>
+          <button type="button" class="profile-option" data-profile-code="UK_CHROME"><span class="profile-copy"><strong>Chrome</strong></span></button>
+          <button type="button" class="profile-option" data-profile-code="US_EDGE"><span class="profile-copy"><strong>Edge</strong></span></button>
+          <button type="button" class="profile-option" data-profile-code="UK_EDGE"><span class="profile-copy"><strong>Edge</strong></span></button>
+        </div>
+      </section>
+
+      <section class="step-card">
+        <div class="step-heading"><span class="step-number">02</span><div><h2>TikTok 로그인</h2><p>선택한 브라우저와 국가의 기존 로그인 세션을 그대로 사용합니다.</p></div></div>
+        <div class="login-action-row"><div><strong>GMV와 초대장 조회에서 사용한 로그인 세션이 연결됩니다.</strong><p id="rename-selected-login-copy">Chrome · US 로그인 상태를 확인합니다.</p></div><a class="btn secondary" href="/settings?ui=profile-matrix-v7">TikTok 로그인 관리</a></div>
+      </section>
+
+      <section class="step-card">
+        <div class="step-heading"><span class="step-number">03</span><div><h2>수정할 초대장 이름 입력</h2><p>번호 없이 마지막 밑줄까지 입력하세요. 줄바꿈 또는 쉼표로 여러 그룹을 입력할 수 있습니다.</p></div></div>
+        <textarea id="rename-input" class="invitation-textarea" rows="7" placeholder="D_테스트_0914_&#10;D_7MBD_0903_"></textarea>
+        <p class="input-hint">입력 형식: <code>담당자_제품_날짜_</code> · 예: <code>D_테스트_0914_</code></p>
+      </section>
+
+      <section class="step-card">
+        <div class="step-heading"><span class="step-number">04</span><div><h2>입력 분석 미리보기</h2><p id="rename-preview-summary">이름을 입력하면 검색어와 번호 부여 기준을 분석합니다.</p></div></div>
+        <p id="rename-parse-error" class="inline-alert error" hidden></p>
+        <div class="crayon-result-frame accept-preview-frame"><div class="card scroll accept-preview-table"><table><thead><tr><th>No</th><th>Full Invitation</th><th>Product</th><th>Date</th><th>No.</th><th>TikTok 검색어</th></tr></thead><tbody id="rename-preview-rows"></tbody></table></div></div>
+      </section>
+
+      <p id="rename-error" class="inline-alert error" hidden></p>
+      <div class="action-bar accept-action-bar"><div><span>선택한 환경</span><strong id="rename-selected-environment">Chrome · US</strong></div><button id="start-rename" class="btn primary large" disabled>초대장 이름수정 시작</button></div>
+
+      <section id="rename-progress" class="step-card invitation-progress-card" hidden>
+        <div class="step-heading"><span class="step-number">05</span><div><h2>작업 진행 및 결과</h2><p>현재 상태: <strong id="rename-job-status">-</strong> · 현재: <strong id="rename-job-current">-</strong></p><p id="rename-current-change" class="muted">변경 대기 중</p></div></div>
+        <div class="stats rename-stats">
+          <div class="stat"><div id="rename-total" class="n">0</div><div class="l">발견</div></div>
+          <div class="stat"><div id="rename-completed" class="n">0</div><div class="l">번호 완료</div></div>
+          <div class="stat"><div id="rename-remaining" class="n">0</div><div class="l">남은 수량</div></div>
+          <div class="stat"><div id="rename-current-number" class="n">-</div><div class="l">최근 번호</div></div>
+          <div class="stat"><div id="rename-failed" class="n">0</div><div class="l">실패</div></div>
+        </div>
+        <div class="bar"><span id="rename-progress-fill" style="width:0%"></span></div>
+        <p id="rename-page-status" class="muted">Target Invitation Search Page -</p>
+        <div class="row invitation-actions"><button id="pause-rename" class="btn secondary">일시정지</button><button id="resume-rename" class="btn secondary" hidden>작업 계속</button><button id="cancel-rename" class="btn danger">중지</button><button id="retry-rename" class="btn secondary" hidden>이어서 재실행</button><a id="download-rename" class="btn primary" hidden>결과 다운로드</a><button id="reset-rename" class="btn ghost">초기화</button></div>
+
+        <div class="accept-work-grid rename-work-grid">
+          <div class="card accept-log-card"><h3>실시간 작업 로그</h3><div id="rename-logs" class="accept-log-viewer"></div></div>
+          <div class="crayon-result-frame invitation-result-frame"><div class="card scroll invitation-result-table rename-result-table"><table><thead><tr><th>입력 그룹</th><th>변경 전</th><th>변경 후</th><th>번호</th><th>상태</th><th>결과 / 실패 사유</th></tr></thead><tbody id="rename-result-rows"></tbody></table></div></div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
