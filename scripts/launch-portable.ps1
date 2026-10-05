@@ -2,7 +2,7 @@ param(
   [switch]$NoBrowser,
   [string]$RuntimeRoot = "",
   [ValidatePattern('^/')]
-  [string]$StartPath = "/?ui=browser-market-v7"
+  [string]$StartPath = "/?ui=firefox-de-v12&assets=12"
 )
 
 $ErrorActionPreference = "Stop"
@@ -87,13 +87,15 @@ function Test-WebSite([string]$ExpectedNodeEnv) {
       $invitationPage.StatusCode -eq 200 -and
       $invitationPage.Content -match "invitation-acceptor\.js" -and
       $invitationScript.StatusCode -eq 200 -and
-      $invitationScript.Content -match "invitation-name-editor-v42" -and
+      $invitationScript.Content -match "invitation-name-editor-v44" -and
       $nameEditPage.StatusCode -eq 200 -and
       $nameEditPage.Content -match "invitation-name-editor\.js" -and
       $nameEditScript.StatusCode -eq 200 -and
-      $nameEditScript.Content -match "invitation-name-editor-v42" -and
+      $nameEditScript.Content -match "invitation-name-editor-v44" -and
       $profileSelectorScript.StatusCode -eq 200 -and
-      $profileSelectorScript.Content -match "browser-market-selector-v11"
+      $profileSelectorScript.Content -match "browser-market-selector-v12" -and
+      $profileSelectorScript.Content -match "FIREFOX" -and
+      $profileSelectorScript.Content -match 'data-market="DE"'
   }
   catch {
     return $false
@@ -264,7 +266,7 @@ try {
   # because each Job receives an independent disposable browser profile in Worker v12.
   $env:GMV_DEFAULT_CONCURRENCY = "1"
   $env:GMV_MAX_CONCURRENCY = "1"
-  # Browser and market are independent choices: Chrome/Edge can each use US or UK. The Worker
+  # Browser and market are independent choices: Chrome/Edge/Firefox can each use US, UK or DE. The Worker
   # still performs the authenticated Seller -> Affiliate hand-off before Creator Search.
   $env:GMV_BROWSER_CHANNEL = "chrome"
   $env:GMV_CHROME_BROWSER_CHANNEL = "chrome"
@@ -273,8 +275,13 @@ try {
   $env:GMV_FIND_CREATORS_URL = "https://affiliate-us.tiktok.com/connection/creator?shop_region=US"
   $env:GMV_UK_BROWSER_CHANNEL = "msedge"
   $env:GMV_EDGE_BROWSER_CHANNEL = "msedge"
+  $env:GMV_FIREFOX_BROWSER_CHANNEL = "firefox"
   $env:GMV_UK_AFFILIATE_ENTRY_URL = "https://affiliate.tiktok.com/connection/target-invitation?shop_region=GB"
   $env:GMV_UK_FIND_CREATORS_URL = "https://affiliate.tiktok.com/connection/creator?shop_region=GB"
+  $env:GMV_DE_LOGIN_URL = "https://seller-eu.tiktok.com/account/login?shop_region=DE"
+  $env:GMV_DE_LOGIN_SUCCESS_URL = "https://seller-eu.tiktok.com/affiliate/landing?shop_region=DE"
+  $env:GMV_DE_AFFILIATE_ENTRY_URL = "https://affiliate.tiktok.com/connection/target-invitation?shop_region=DE"
+  $env:GMV_DE_FIND_CREATORS_URL = "https://affiliate.tiktok.com/connection/creator?shop_region=DE"
   $env:WORKER_BASE_URL = "http://127.0.0.1:8000"
   $env:HOSTNAME = "127.0.0.1"
   $env:PORT = "3000"
@@ -284,7 +291,7 @@ try {
   $workerHealth = "http://127.0.0.1:8000/health"
   # Chrome jobs use disposable snapshots. Edge jobs use the verified persistent profile
   # under a per-profile lock because some Edge installations cannot launch a copied profile.
-  $buildId = "invitation-name-editor-v42"
+  $buildId = "invitation-name-editor-v44"
   $expectedNodeEnv = "production"
 
   Write-Step "[1/3] Checking the unified GMV + Invitation worker..."

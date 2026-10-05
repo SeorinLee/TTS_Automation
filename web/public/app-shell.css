@@ -201,6 +201,7 @@
 
 .picker-code.us { background: #6266e9; }
 .picker-code.uk { background: #18b5bd; }
+.picker-code.de { background: #d69b25; }
 
 .picker-arrow {
   padding-bottom: 26px;
@@ -426,6 +427,10 @@
 .invitation-textarea:focus { border-color: #536df1; box-shadow: 0 0 0 3px rgba(83,109,241,.13); }
 .input-hint { margin: 10px 0 0; color: #7080a3; font-size: 12px; }
 .input-hint code { padding: 3px 6px; border-radius: 6px; color: #405ad7; background: #eef2ff; }
+.rename-manual-number { display: grid; grid-template-columns: minmax(0, 1fr) 180px; gap: 18px; align-items: center; margin-top: 16px; padding: 16px 18px; border: 1px solid #e3cfc3; border-radius: 14px; background: #fff8ea; }
+.rename-manual-number label { display: grid; gap: 5px; color: #65453f; }
+.rename-manual-number label span { color: #7080a3; font-size: 12px; line-height: 1.5; }
+.rename-manual-number input { width: 100%; padding: 12px 14px; border: 1px solid #e8a79d; border-radius: 10px; font: 700 16px/1.2 ui-monospace, SFMono-Regular, Consolas, monospace; }
 .accept-preview-table { max-height: 320px; margin-top: 14px; }
 .accept-action-bar { margin-top: 18px; }
 .invitation-stats { grid-template-columns: repeat(7, minmax(0, 1fr)); }
@@ -453,6 +458,7 @@
 @media (max-width: 900px) {
   .invitation-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .rename-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rename-manual-number { grid-template-columns: 1fr; }
   .accept-work-grid { grid-template-columns: 1fr; }
   .login-action-row { align-items: stretch; flex-direction: column; }
 }
@@ -619,6 +625,11 @@ h1 {
 .picker-code.uk,
 .market-mark.cyan {
   background: #7faec0;
+}
+
+.market-mark.gold {
+  color: #72510d;
+  background: #ffe39a;
 }
 
 .picker-selection,
@@ -1638,6 +1649,17 @@ h1 {
 
 .browser-choice-icon.chrome { background-image: url("/browser-chrome.png?v=1"); }
 .browser-choice-icon.edge { background-image: url("/browser-edge.png?v=1"); }
+.browser-choice-icon.firefox {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(135deg, #5d2fdb 5%, #d63384 52%, #ff8a24 100%);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.28);
+  font-size: 12px;
+  font-weight: 850;
+}
+.browser-choice-icon.firefox::before { content: "Fx"; }
 
 .browser-choice-copy {
   display: flex;

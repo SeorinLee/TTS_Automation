@@ -3,11 +3,11 @@
 ## 실행
 
 1. `START_TIKTOK_AUTOMATION.bat`을 실행합니다.
-2. 상단 **TikTok 로그인**에서 사용할 Chrome/Edge + US/UK 조합을 로그인합니다.
+2. 상단 **TikTok 로그인**에서 사용할 Chrome/Edge/Firefox + US/UK/DE 조합을 로그인합니다.
 3. 상단 **초대장 조회**로 이동합니다.
 4. 초대장명을 줄바꿈 또는 쉼표로 입력하고 **초대장 조회 시작**을 누릅니다.
 
-사용자 PC에 Python, Node.js, npm을 설치할 필요가 없습니다. 배포 ZIP에 Worker 실행 파일과 Node.js 런타임이 모두 포함됩니다. ZIP 전체를 압축 해제한 후 실행해야 하며 Windows 10/11 64비트와 Chrome 또는 Microsoft Edge가 필요합니다.
+사용자 PC에 Python, Node.js, npm을 설치할 필요가 없습니다. 배포 ZIP에 Worker 실행 파일과 Node.js 런타임이 모두 포함됩니다. ZIP 전체를 압축 해제한 후 실행해야 하며 Windows 10/11 64비트와 Chrome, Microsoft Edge 또는 Firefox가 필요합니다.
 
 GMV 조회와 초대장 조회는 `worker/gmv-worker.exe` 하나에서 함께 실행됩니다. 열린 사이트의 상단 메뉴에서 두 기능을 선택합니다. 구형 `invitation-worker` 프로세스(8001번 포트)는 통합 런처가 종료합니다.
 

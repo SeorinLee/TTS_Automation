@@ -3,27 +3,38 @@
 
   if (window.__gmvBrowserMarketSelectorLoaded) return;
   window.__gmvBrowserMarketSelectorLoaded = true;
-  window.__gmvBrowserMarketSelectorBuild = "browser-market-selector-v11";
+  window.__gmvBrowserMarketSelectorBuild = "browser-market-selector-v12";
 
   var selectedBrowser = "CHROME";
   var selectedMarket = "US";
   var profiles = [];
   var originalFetch = window.fetch.bind(window);
+  var expectedProfiles = ["US", "UK", "DE"].flatMap(function (market) {
+    return ["CHROME", "EDGE", "FIREFOX"].map(function (browser) {
+      return market + "_" + browser;
+    });
+  });
 
   function selectedCode() {
     return selectedMarket + "_" + selectedBrowser;
   }
 
   function browserName(code) {
-    return code.endsWith("CHROME") ? "Chrome" : "Edge";
+    if (code.endsWith("CHROME")) return "Chrome";
+    if (code.endsWith("FIREFOX")) return "Firefox";
+    return "Edge";
   }
 
   function marketName(code) {
-    return code.startsWith("US_") ? "United States" : "United Kingdom";
+    if (code.startsWith("US_")) return "United States";
+    if (code.startsWith("DE_")) return "Germany";
+    return "United Kingdom";
   }
 
   function marketCode(code) {
-    return code.startsWith("US_") ? "US" : "UK";
+    if (code.startsWith("US_")) return "US";
+    if (code.startsWith("DE_")) return "DE";
+    return "UK";
   }
 
   function profileStatus(code) {
@@ -47,7 +58,19 @@
   async function loadProfiles() {
     try {
       var response = await originalFetch("/api/profiles", { cache: "no-store" });
-      if (response.ok) profiles = await response.json();
+      if (response.ok) {
+        var loaded = await response.json();
+        profiles = expectedProfiles.map(function (code) {
+          return loaded.find(function (item) { return item.profile_code === code; }) || {
+            profile_code: code,
+            browser: browserName(code),
+            market: marketCode(code),
+            status: "login_required",
+            last_login_at: null,
+            last_verified_at: null
+          };
+        });
+      }
     } catch (_) {}
   }
 
@@ -97,7 +120,8 @@
     var code = selectedCode();
     window.__gmvSelectedProfileCode = code;
     var status = profileStatus(code);
-    var host = selectedMarket === "US" ? "affiliate-us.tiktok.com" : "affiliate.tiktok.com";
+    var host = selectedMarket === "US" ? "affiliate-us.tiktok.com" :
+      selectedMarket === "DE" ? "seller-eu.tiktok.com · shop_region=DE" : "affiliate.tiktok.com";
     picker.querySelector("[data-selection-summary]").textContent =
       browserName(code) + " · " + selectedMarket + " · " + host;
     var statusNode = picker.querySelector("[data-selection-status]");
@@ -120,7 +144,7 @@
     if (["login_required", "disconnected", "expired", "error"].indexOf(status) >= 0) {
       var helper = document.createElement("p");
       helper.className = "inline-alert profile-login-helper";
-      helper.innerHTML = "선택한 조합의 로그인이 필요합니다. <a href=\"/settings?ui=profile-matrix-v5\">로그인 관리 열기 →</a>";
+      helper.innerHTML = "선택한 조합의 로그인이 필요합니다. <a href=\"/settings?ui=profile-matrix-v12\">로그인 관리 열기 →</a>";
       grid.parentNode.appendChild(helper);
     }
   }
@@ -132,12 +156,14 @@
       '<div class="picker-group"><span class="picker-label">1. 브라우저 선택</span>' +
       '<div class="picker-options" role="group" aria-label="브라우저 선택">' +
       '<button type="button" data-browser="CHROME"><span class="browser-choice-icon chrome" aria-hidden="true"></span><span class="browser-choice-copy"><strong>Chrome</strong><small>Google Chrome</small></span></button>' +
-      '<button type="button" data-browser="EDGE"><span class="browser-choice-icon edge" aria-hidden="true"></span><span class="browser-choice-copy"><strong>Edge</strong><small>Microsoft Edge</small></span></button></div></div>' +
+      '<button type="button" data-browser="EDGE"><span class="browser-choice-icon edge" aria-hidden="true"></span><span class="browser-choice-copy"><strong>Edge</strong><small>Microsoft Edge</small></span></button>' +
+      '<button type="button" data-browser="FIREFOX"><span class="browser-choice-icon firefox" aria-hidden="true"></span><span class="browser-choice-copy"><strong>Firefox</strong><small>Mozilla Firefox</small></span></button></div></div>' +
       '<div class="picker-arrow" aria-hidden="true">→</div>' +
       '<div class="picker-group"><span class="picker-label">2. 국가 선택</span>' +
       '<div class="picker-options market-options" role="group" aria-label="국가 선택">' +
       '<button type="button" data-market="US"><span class="picker-code us">US</span><strong>United States</strong></button>' +
-      '<button type="button" data-market="UK"><span class="picker-code uk">UK</span><strong>United Kingdom</strong></button></div></div>' +
+      '<button type="button" data-market="UK"><span class="picker-code uk">UK</span><strong>United Kingdom</strong></button>' +
+      '<button type="button" data-market="DE"><span class="picker-code de">DE</span><strong>Germany</strong></button></div></div>' +
       '<div class="picker-selection"><span>선택한 환경</span><strong data-selection-summary></strong>' +
       '<small data-selection-status class="picker-status checking"></small></div>';
     picker.addEventListener("click", function (event) {
@@ -156,7 +182,7 @@
     var grid = document.querySelector(".profile-grid");
     if (!grid) return;
     var description = grid.closest(".step-card").querySelector(".step-heading p");
-    if (description) description.textContent = "Chrome 또는 Edge를 고른 뒤 US/UK 국가를 선택하세요. 선택 조합 그대로 자동화됩니다.";
+    if (description) description.textContent = "Chrome, Edge, Firefox 중 하나를 고른 뒤 US/UK/DE 국가를 선택하세요. 선택 조합 그대로 자동화됩니다.";
     grid.classList.add("profile-combo-source");
     var picker = document.querySelector(".browser-market-picker");
     if (!picker) {
@@ -187,9 +213,9 @@
     section.setAttribute("data-custom-profile", code);
     section.innerHTML =
       '<div class="account-card-head"><span class="market-mark ' +
-      (code.startsWith("UK_") ? "cyan" : "blue") + '">' + marketCode(code) + '</span>' +
+      (code.startsWith("UK_") ? "cyan" : code.startsWith("DE_") ? "gold" : "blue") + '">' + marketCode(code) + '</span>' +
       '<div><h2>' + browserName(code) + " · " + marketName(code) + '</h2><p>' +
-      (code.startsWith("US_") ? "seller-us.tiktok.com" : "seller-uk.tiktok.com") + '</p></div>' +
+      (code.startsWith("US_") ? "seller-us.tiktok.com" : code.startsWith("DE_") ? "seller-eu.tiktok.com · shop_region=DE" : "seller-uk.tiktok.com") + '</p></div>' +
       '<span class="status-pill ' + profile.status + '">' + statusText(profile.status) + '</span></div>' +
       '<div class="account-times"><div><span>마지막 로그인</span><strong>' +
       (profile.last_login_at || "-") + '</strong></div><div><span>마지막 확인</span><strong>' +
@@ -220,7 +246,7 @@
     grid.replaceChildren();
     profiles.forEach(function (profile) { grid.appendChild(profileCard(profile)); });
     var intro = document.querySelector(".page-intro .sub");
-    if (intro) intro.textContent = "Chrome과 Edge에서 US/UK를 각각 선택할 수 있으며 로그인은 조합별로 저장됩니다.";
+    if (intro) intro.textContent = "Chrome, Edge, Firefox에서 US/UK/DE를 각각 선택할 수 있으며 로그인은 조합별로 저장됩니다.";
   }
 
   async function start() {
@@ -242,7 +268,7 @@
     if (!link || window.location.pathname.indexOf("/settings") === 0) return;
     event.preventDefault();
     event.stopPropagation();
-    window.location.assign("/settings?ui=profile-matrix-v5");
+    window.location.assign("/settings?ui=profile-matrix-v12");
   }, true);
 
   document.addEventListener("click", function (event) {
@@ -250,7 +276,7 @@
     if (!link || window.location.pathname === "/") return;
     event.preventDefault();
     event.stopPropagation();
-    window.location.assign("/?ui=browser-market-v5");
+    window.location.assign("/?ui=firefox-de-v12");
   }, true);
 
   start();

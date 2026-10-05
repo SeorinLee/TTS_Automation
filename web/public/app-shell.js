@@ -4,12 +4,12 @@
   function addStylesheet() {
     var existing = document.querySelector('link[data-app-shell-style]');
     if (existing) {
-      existing.href = "/app-shell.css?v=23";
+      existing.href = "/app-shell.css?v=35";
       return;
     }
     var link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "/app-shell.css?v=23";
+    link.href = "/app-shell.css?v=35";
     link.setAttribute("data-app-shell-style", "true");
     document.head.appendChild(link);
   }
@@ -35,7 +35,7 @@
     if (window.location.pathname !== "/" && window.location.pathname.indexOf("/settings") !== 0) return;
     if (document.querySelector('script[data-browser-market-selector]')) return;
     var script = document.createElement("script");
-    script.src = "/browser-market-selector.js?v=10";
+    script.src = "/browser-market-selector.js?v=12";
     script.defer = true;
     script.setAttribute("data-browser-market-selector", "true");
     document.head.appendChild(script);

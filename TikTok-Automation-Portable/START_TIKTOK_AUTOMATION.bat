@@ -1,4 +1,5 @@
 @echo off
+rem Launcher build: firefox-de-v12
 setlocal
 title TikTok Automation
 cd /d "%~dp0"
